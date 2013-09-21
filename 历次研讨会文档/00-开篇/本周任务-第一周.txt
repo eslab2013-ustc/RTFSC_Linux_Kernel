@@ -1,0 +1,18 @@
+这周的任务是编译内核:
+	1.现在自己电脑上安装ubuntu，（可以选择在自己笔记本上安装，如果已经有操作系统 那就安装双系统吧）——这是必须完成的	
+	2.下载一个和你安装的系统内核不同的版本的
+
+本周要求:
+	1.编译内核
+	2.熟悉linux系统的使用(包括基本命令和C语言编程)
+
+参考：
+	ubuntu下载:http://www.ubuntu.org.cn/download
+	内核下载:https://www.kernel.org/
+	内核编译过程:http://www.fengwenxuan.com/rhelinux/1366.html
+	有一本可以快速熟悉linux基本使用的参考书《鸟哥的私房菜》
+	师兄的个人主页:http://home.ustc.edu.cn/~ustczhp/anatomy_linux_kernel.html
+
+
+TIP:
+	有的资源(例如操作系统安装文件)没必要多次下载,谁下载一份可以和大家共享。	
