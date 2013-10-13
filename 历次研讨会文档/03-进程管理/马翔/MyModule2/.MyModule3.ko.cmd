@@ -1,0 +1,1 @@
+cmd_/home/supermxc/Programming/MyModule3/MyModule3.ko := ld -r -m elf_i386 -T /usr/src/kernels/linux-2.6.32.61/scripts/module-common.lds --build-id -o /home/supermxc/Programming/MyModule3/MyModule3.ko /home/supermxc/Programming/MyModule3/MyModule3.o /home/supermxc/Programming/MyModule3/MyModule3.mod.o
