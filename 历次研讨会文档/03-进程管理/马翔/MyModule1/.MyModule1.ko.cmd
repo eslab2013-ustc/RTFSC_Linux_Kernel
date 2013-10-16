@@ -1,1 +1,0 @@
-cmd_/home/supermxc/Programming/MyModule1/MyModule1.ko := ld -r -m elf_i386 -T /usr/src/kernels/linux-2.6.32.61/scripts/module-common.lds --build-id -o /home/supermxc/Programming/MyModule1/MyModule1.ko /home/supermxc/Programming/MyModule1/MyModule1.o /home/supermxc/Programming/MyModule1/MyModule1.mod.o
