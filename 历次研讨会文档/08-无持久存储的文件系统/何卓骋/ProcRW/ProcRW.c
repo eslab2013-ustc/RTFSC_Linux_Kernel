@@ -6,8 +6,8 @@
 #include <linux/slab.h>
 
 int len, temp;
-
 char *msg;
+static struct proc_dir_entry *proc_parent;
 
 int proc_rw_read(struct file *filp, char *buf, size_t count, loff_t *offp)
 {
@@ -36,14 +36,21 @@ static const struct file_operations rw_proc_fops = {
 
 static int __init proc_rw_init(void)
 {
-    proc_create("rw", 0, NULL, &rw_proc_fops);
-    msg = kmalloc(GFP_KERNEL, 20*sizeof(char));
+    proc_parent = proc_mkdir_mode("proctest", 0777, NULL);
+    if(!proc_parent)
+    {
+        printk(KERN_INFO "Error creating proc entry");
+        return -ENOMEM;
+    }
+    proc_create("rw", 0666, proc_parent, &rw_proc_fops);
+    msg = kmalloc(GFP_KERNEL, 2*sizeof(char));
     return 0;
 }
 
 static void __exit proc_rw_exit(void)
 {
-    remove_proc_entry("rw", NULL);
+    remove_proc_entry("rw", proc_parent);
+    remove_proc_entry("proctest", NULL);
 }
 
 MODULE_LICENSE("GPL");
