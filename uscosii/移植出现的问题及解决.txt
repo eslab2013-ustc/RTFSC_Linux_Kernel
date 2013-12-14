@@ -1,0 +1,26 @@
+user\..\ucosii\..\ports\os_cpu.h(203): error: #169: expected a declaration
+
+在keil下移植ucosii编译时总是会出现类似上述的问题。
+究其原因就是在源代码中出现了__asm这样的编译指令。但是问题是ucosii官网上下载的源码是用IAR编译的，
+在IAR中这个预处理指令的意思就是告诉编译器本代码是运行在ARM指令模式下而不是Thumb指令模式下。
+其中官网中是这样描述的：
+You should note that these prototypes are prefixed with the special keyword __arm.This is 
+an IAR keyword that indicates that these functions will run in ARM mode and thus, when called,
+the compiler will generate the appropriate instrcutions.
+因此在keil4编译器下是无法识别这样的关键字的。keil编译器区别ARM模式还是Thumb模式是通过图形界面中设定的，
+所以问题的解决方法是将所有的__asm关键给删除就ＯＫ了。
+
+
+ports\os_cpu_a.asm(41): error: A1163E: Unknown opcode PUBLIC , expecting opcode or Macro
+
+在keil下移植ucosii编译时总是会出现类似上述的问题
+原因同上，Keil下是没有PUBLIC这个关键字的，改成EXPORT就可以了。
+
+编译时会出现类似这样的错误：uCOSTsp.axf: Error: L6218E: Undefined symbol App_TaskDelHook (referred from os_cpu_c.o).
+这说明这些函数都没有定义。
+解决方法：在ports文件夹下新建一个bsp.c文件，在该文件中定义这些以“App”开头的函数，函数体为空，文件包含#include "..\\user\\includes.h"这个头文件。
+
+
+uCOSTsp.axf: Error: L6218E: Undefined symbol OSTaskReturnHook (referred from ucos_ii.o).
+出现这个错误的原因是工程中没有定义该
+
