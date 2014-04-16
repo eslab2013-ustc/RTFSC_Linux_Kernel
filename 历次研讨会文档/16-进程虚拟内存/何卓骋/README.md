@@ -41,8 +41,8 @@ mmap ---> sys_mmap ---> do_mmap_pgoff
     * 通过find_vma_prepare 来寻找vm_area_struct实例, 如果一个映射已经存在，则通过do_munmap来移除
     * vm_enough_memory 被调用，如果MAP_NORESERVE flag未被置位，或者内核参数 sysctl_overcommit_memory 被设置为 OVERCOMMIT_NEVER，如果检查失败，返回ENOMEM
 * 一旦内核接收到需求的内存，进行如下步骤:
-    # 初始化vm_area_struct实例，插入进程的 list/tree 数据结构
-    # 创建映射：file->f_op->mmap. `vma->vm_ops = &generic_file_vm_ops;` generic_file_vm_ops的核心成员是filemap_fault,当一个应用程序访问了一段区间，其对应的数据还未存在于RAM的时候被调用。即映射的数据在被需要的时候才被填充到RAM。
+    1. 初始化vm_area_struct实例，插入进程的 list/tree 数据结构
+    2. 创建映射：file->f_op->mmap. `vma->vm_ops = &generic_file_vm_ops;` generic_file_vm_ops的核心成员是filemap_fault,当一个应用程序访问了一段区间，其对应的数据还未存在于RAM的时候被调用。即映射的数据在被需要的时候才被填充到RAM。
 * 如果VM_LOCKED置位，调用make_pages_present 确保内存页的数据被读入。(需要先读入数据再对其加锁以放置换出)
 * 新映射的起始地址作为该系统调用的返回值
 
@@ -82,9 +82,9 @@ logn sys_remap_file_pages(unsigned long start, unsigned long size,
     * 映射区域的页表项被特殊生成，看上去像是不存在的页表项，但是被标记为非线性映射。
     * 当该PTE对应的页被访问时，page fault产生，正确的页被读入。
 * 生成非线性PTE需要体系结构对应的代码，必须声明三个函数：
-    # pgoff_to_pte 读取一个文件的offset，编码为一个page number存储在页表中。
-    # pte_to_pgoff 反之
-    # pte_file(pte) 检查给定的pte是否被用于表示非线性映射
+    1. pgoff_to_pte 读取一个文件的offset，编码为一个page number存储在页表中。
+    2. pte_to_pgoff 反之
+    3. pte_file(pte) 检查给定的pte是否被用于表示非线性映射
 * 常数PTE_FILE_MAX_BITS标识了多少bits可以用于表示文件offset
 
 #### sys_remap_file_pages
