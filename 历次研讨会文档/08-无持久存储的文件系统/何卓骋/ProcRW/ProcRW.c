@@ -43,7 +43,7 @@ static int __init proc_rw_init(void)
         return -ENOMEM;
     }
     proc_create("rw", 0666, proc_parent, &rw_proc_fops);
-    msg = kmalloc(GFP_KERNEL, 2*sizeof(char));
+    msg = kmalloc(2*sizeof(char), GFP_KERNEL);
     return 0;
 }
 
