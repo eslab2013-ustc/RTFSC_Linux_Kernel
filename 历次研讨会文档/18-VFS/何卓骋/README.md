@@ -7,6 +7,8 @@
 
 * `struct module *owner`;  owner 只有在filesystem被作为module加载，而不是编译进内核的时候使用，此时该指针指向对应的module的数据结构。
 
+| 函数名                   | 功能                                                                                            |
+|--------------------------|-------------------------------------------------------------------------------------------------|
 | read/write               | 读写。参数:文件描述符，缓冲区，偏移量，字节数。                                                 |
 | aio_read/aio_write       | 异步读写操作                                                                                    |
 | open                     | 关联文件对象和inode                                                                             |
@@ -26,7 +28,7 @@
 | splice_read/splice_write | 用于在管道和文件之间传输数据                                                                    |
 
 * 不同类型的操作声明。例如:
-{% highlight c %}
+``` c
     const struct file_operations def_blk_fops = {
         .open = blkdev_open,
         .release = blkdev_close,
@@ -41,20 +43,20 @@
         .splice_read = generic_file_splice_read,
         .splice_write = generic_file_splice_write,
     };
-{% endhighlight %}
+```
 
 ### Directory information
 
 * task_struct 中包含一个指向fs_struct的指针
 
-{% highlight c %}
+``` c
     struct fs_struct {
         atomic_t count;
         int umask;
         struct dentry * root, * pwd, * altroot;
         struct vfsmount * rootmnt, * pwdmnt, * altrootmnt;
     }
-{% endhighlight %}
+```
 
 * umask 表示新建文件的默认permission。可以通过命令umask更改，调用同名的系统调用
 * dentry 指向目录名，vfsmount表示了挂载文件系统。
@@ -70,7 +72,7 @@
 * 是一个所有挂载了的文件系统的集合
 * forked 或者 cloned的进程集成了父进程的命名空间。如果CLONE_NEWNS被置位，则创建新的ns，如果新ns被修改，不会影响属于不同ns的进程。
 * task_struct 中包含一个元素nsproxy，用于处理ns
-{% highlight c %}
+``` c
     struct nsproxy {
         ...
         struct mnt_namespace *mnt_ns;
@@ -82,7 +84,7 @@
         struct vsmount * root;
         struct list_head list;
     }
-{% endhighlight %}
+```
 
 * count 计数，多少个进程在使用该ns
 * root 指向root目录的vfsmount实例
@@ -96,7 +98,7 @@ ns操作例如mount和umount并不对内核全局数据结构进行，而是操�
 * linux使用 dentry cache来解决这个问题，cache被建立在struct dentry中
 * 一旦VFS，伴随具体的文件系统实现，读了某个目录或者文件的数据，一个dentry实例便被创建以便于将数据进行cache
 
-{% highlight c %}
+```c
     struct dentry {
         /* RCU lookup touched fields */
         unsigned int d_flags;		/* protected by d_lock */
@@ -126,7 +128,7 @@ ns操作例如mount和umount并不对内核全局数据结构进行，而是操�
         struct list_head d_subdirs;	/* our children */
         struct hlist_node d_alias;	/* inode alias list */
     };
-{% endhighlight %}
+```
 
 * dentry 的实例形成一个网络来映射文件系统的结构。与给定dentry所有相关的文件和子目录都被包括在d_subdirs（也是dentry实例）列表中。
 * 文件系统的拓扑仍然没有完全被映射，因为dentry cache只包含了其中的一小部分，最常使用的文件和目录被保存在内存。
@@ -158,7 +160,7 @@ ns操作例如mount和umount并不对内核全局数据结构进行，而是操�
 ### Dentry Operations
 
 * dentry_operations 结构包含了各种dentry操作的函数指针，如下:
-{% highlight c %}
+```c
     struct dentry_operations {
         int (*d_revalidate)(struct dentry *, struct nameidata *);
         int (*d_hash) (struct dentry *, struct qstr *);
@@ -168,7 +170,7 @@ ns操作例如mount和umount并不对内核全局数据结构进行，而是操�
         void (*d_iput)(struct dentry *, struct inode *);
         char *(*d_dname)(struct dentry *, char *, int);
     };
-{% endhighlight %}
+```
 
 * d_iput 释放不用了的dentry的inode
 * d_release 在dentry被最终删除之前调用，
@@ -179,6 +181,8 @@ ns操作例如mount和umount并不对内核全局数据结构进行，而是操�
 
 ### Standard functions
 
+| 函数名         | 功能                                                                                                                |
+|----------------|---------------------------------------------------------------------------------------------------------------------|
 | dget           | 当dentry实例被内核的某部分需求时调用，引用计数加1                                                                   |
 | dput           | 与dget相对，引用减1，如果降至0，则调用dentry_operations->d_delete 来删除。从全局hash表中删除(d_drop)，放置到LRU上。 |
 | d_drop         | unhash                                                                                                              |
